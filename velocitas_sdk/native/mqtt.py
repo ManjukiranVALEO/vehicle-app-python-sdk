@@ -38,9 +38,16 @@ class MqttClient(PubSubClient):
         self._port = port
         self._hostname = hostname
         self._topics_to_subscribe: list[MqttTopicSubscription] = []
-
+        MY_DEVICE = "8ce72e08-8899-4e91-b478-6acbbd9e642d"
+        MY_TENANT = "d789823f-76a5-4dca-8279-4f0265c7e34a"
+        MY_PWD = "Valeo@2024"
+        username = "{}@{}".format(MY_DEVICE, MY_TENANT)
+        logger.debug("Mqtt native password set!")
+        logger.info("Mqtt native password set!")
         self._pub_client = mqtt.Client()
         self._sub_client = mqtt.Client()
+        self._pub_client.username_pw_set(username, MY_PWD)
+        self._sub_client.username_pw_set(username, MY_PWD)
         self._sub_client.on_connect = self.on_connect
         self._sub_client.on_disconnect = self.on_disconnect
 
