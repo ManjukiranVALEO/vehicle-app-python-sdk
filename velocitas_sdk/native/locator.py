@@ -43,6 +43,14 @@ class NativeServiceLocator(ServiceLocator):
                 )
 
         return str(address)
+    
+    def get_certificates(self, service_name: str) -> str:
+        cacert = os.getenv("SDV_" + service_name.upper() + "_CACERT")
+        key = os.getenv("SDV_" + service_name.upper() + "_KEY")
+        device_cert = os.getenv("SDV_" + service_name.upper() + "_DEVICE_CERT")
+        
+        return cacert, key, device_cert
+
 
     def get_metadata(self, service_name: Optional[str] = None):
         pass

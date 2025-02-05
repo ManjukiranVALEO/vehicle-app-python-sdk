@@ -32,12 +32,15 @@ class NativeMiddleware(Middleware):
         _address = self.service_locator.get_service_location("mqtt")
         _port = urlparse(_address).port
         _hostname = urlparse(_address).hostname
+        _cacert, _key, _device_cert = self.service_locator.get_certificates("mqtt")
 
         if _hostname is None:
             print("No hostname")
             sys.exit(-1)
-
-        self.pubsub_client = MqttClient(hostname=_hostname, port=_port)
+        if _cacert is None:
+            self.pubsub_client = MqttClient(hostname=_hostname, port=_port)
+        else:
+            self.pubsub_client = MqttClient(hostname=_hostname, port=_port, cacert=_cacert, key=_key, device_cert=_device_cert)
 
     async def start(self):
         await self.pubsub_client.init()

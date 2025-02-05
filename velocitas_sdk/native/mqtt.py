@@ -34,13 +34,18 @@ class MqttTopicSubscription:
 class MqttClient(PubSubClient):
     """This class is a wrapper for the on_message callback of the MQTT broker."""
 
-    def __init__(self, hostname: str, port: Optional[int] = None):
+    def __init__(self, hostname: str, port: Optional[int] = None, cacert: Optional[str] = None, key: Optional[str] = None, device_cert: Optional[str] = None):
         self._port = port
         self._hostname = hostname
         self._topics_to_subscribe: list[MqttTopicSubscription] = []
-
+        self._cacert = cacert
+        self._key = key
+        self._device_cert = device_cert
         self._pub_client = mqtt.Client()
         self._sub_client = mqtt.Client()
+        if self._cacert is not None and self._key is not None and self._device_cert is not None:
+            self._pub_client.tls_set(self._cacert, self._key, self._device_cert)
+            self._sub_client.tls_set(self._cacert, self._key, self._device_cert)
         self._sub_client.on_connect = self.on_connect
         self._sub_client.on_disconnect = self.on_disconnect
 
