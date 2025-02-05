@@ -52,8 +52,6 @@ class MqttClient(PubSubClient):
     def on_connect(self, client, userdata, flags, rc):
         if rc == 0:
             logger.debug("Mqtt native connection OK!")
-            logger.info("New submodule!")
-
             # subscribe the registered topics
             for subscription in self._topics_to_subscribe:
                 client.subscribe(subscription.topic)

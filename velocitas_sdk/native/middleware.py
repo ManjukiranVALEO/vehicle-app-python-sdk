@@ -13,12 +13,14 @@
 # SPDX-License-Identifier: Apache-2.0
 
 import sys
+import logging
 from urllib.parse import urlparse
 
 from velocitas_sdk.base import Middleware, MiddlewareType
 from velocitas_sdk.native.locator import NativeServiceLocator
 from velocitas_sdk.native.mqtt import MqttClient
 
+logger = logging.getLogger(__name__)
 
 class NativeMiddleware(Middleware):
     """Native middleware implementation."""
@@ -40,6 +42,7 @@ class NativeMiddleware(Middleware):
         if _cacert is None:
             self.pubsub_client = MqttClient(hostname=_hostname, port=_port)
         else:
+            logger.info("Using certificates to connect to mqtt broker")
             self.pubsub_client = MqttClient(hostname=_hostname, port=_port, cacert=_cacert, key=_key, device_cert=_device_cert)
 
     async def start(self):
