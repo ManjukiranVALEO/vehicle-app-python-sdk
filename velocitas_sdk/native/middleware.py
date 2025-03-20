@@ -35,7 +35,7 @@ class NativeMiddleware(Middleware):
         _port = urlparse(_address).port
         _hostname = urlparse(_address).hostname
         _cacert, _key, _device_cert = self.service_locator.get_certificates("mqtt")
-
+        _proxy_address = self.service_locator.get_service_location("mqtt_proxy")
         if _hostname is None:
             print("No hostname")
             sys.exit(-1)
@@ -43,7 +43,13 @@ class NativeMiddleware(Middleware):
             self.pubsub_client = MqttClient(hostname=_hostname, port=_port)
         else:
             logger.info("Using certificates to connect to mqtt broker")
-            self.pubsub_client = MqttClient(hostname=_hostname, port=_port, cacert=_cacert, key=_key, device_cert=_device_cert)
+            if _proxy_address is None:
+                self.pubsub_client = MqttClient(hostname=_hostname, port=_port, cacert=_cacert, key=_key, device_cert=_device_cert)
+            else:
+                logger.info("Using proxy to connect to mqtt broker")
+                _proxy_port = urlparse(_proxy_address).port
+                _proxy_hostname = urlparse(_proxy_address).hostname
+                self.pubsub_client = MqttClient(hostname=_hostname, port=_port, cacert=_cacert, key=_key, device_cert=_device_cert, proxy_hostname=_proxy_hostname, proxy_port=_proxy_port)
 
     async def start(self):
         await self.pubsub_client.init()

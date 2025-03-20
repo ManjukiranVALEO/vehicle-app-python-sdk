@@ -28,6 +28,7 @@ class NativeServiceLocator(ServiceLocator):
         self.default_addresses = {
             "mqtt": "mqtt://localhost:1883",
             "vehicledatabroker": "grpc://localhost:55555",
+            "mqtt_proxy": None
         }
 
     def get_service_location(self, service_name: str) -> str:

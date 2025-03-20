@@ -34,15 +34,20 @@ class MqttTopicSubscription:
 class MqttClient(PubSubClient):
     """This class is a wrapper for the on_message callback of the MQTT broker."""
 
-    def __init__(self, hostname: str, port: Optional[int] = None, cacert: Optional[str] = None, key: Optional[str] = None, device_cert: Optional[str] = None):
+    def __init__(self, hostname: str, port: Optional[int] = None, cacert: Optional[str] = None, key: Optional[str] = None, device_cert: Optional[str] = None, proxy_hostname: Optional[str] = None, proxy_port: Optional[str] = None):
         self._port = port
         self._hostname = hostname
         self._topics_to_subscribe: list[MqttTopicSubscription] = []
         self._cacert = cacert
         self._key = key
         self._device_cert = device_cert
+        self._proxy_hostname = proxy_hostname
+        self._proxy_port = proxy_port
         self._pub_client = mqtt.Client()
         self._sub_client = mqtt.Client()
+        if self._proxy_hostname is not None and self._proxy_port is not None:
+            self._pub_client.proxy_set(proxy_type=socks.HTTP, proxy_addr=self._proxy_hostname, proxy_port=self._proxy_port)
+            self._sub_client.proxy_set(proxy_type=socks.HTTP, proxy_addr=self._proxy_hostname, proxy_port=self._proxy_port)
         if self._cacert is not None and self._key is not None and self._device_cert is not None:
             self._pub_client.tls_set(ca_certs=self._cacert, certfile=self._device_cert, keyfile=self._key)
             self._sub_client.tls_set(ca_certs=self._cacert, certfile=self._device_cert, keyfile=self._key)
