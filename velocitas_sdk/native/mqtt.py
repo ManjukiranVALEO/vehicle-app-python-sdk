@@ -14,6 +14,7 @@
 
 import asyncio
 import logging
+import socks
 from typing import Optional
 
 import paho.mqtt.client as mqtt  # type: ignore

@@ -185,6 +185,7 @@ yarl==1.9.7
     # via aiohttp
 zipp==3.20.1
     # via importlib-metadata
+socks
 
 # The following packages are considered to be unsafe in a requirements file:
 # pip
