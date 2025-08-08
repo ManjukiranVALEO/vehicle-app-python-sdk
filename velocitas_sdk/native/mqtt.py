@@ -35,7 +35,7 @@ class MqttTopicSubscription:
 class MqttClient(PubSubClient):
     """This class is a wrapper for the on_message callback of the MQTT broker."""
 
-    def __init__(self, hostname: str, port: Optional[int] = None, cacert: Optional[str] = None, key: Optional[str] = None, device_cert: Optional[str] = None, proxy_hostname: Optional[str] = None, proxy_port: Optional[str] = None):
+    def __init__(self, hostname: str, port: Optional[int] = None, cacert: Optional[str] = None, key: Optional[str] = None, device_cert: Optional[str] = None, proxy_hostname: Optional[str] = None, proxy_port: Optional[str] = None, client_id: Optional[str] = ""):
         self._port = port
         self._hostname = hostname
         self._topics_to_subscribe: list[MqttTopicSubscription] = []
@@ -44,8 +44,9 @@ class MqttClient(PubSubClient):
         self._device_cert = device_cert
         self._proxy_hostname = proxy_hostname
         self._proxy_port = proxy_port
-        self._pub_client = mqtt.Client()
-        self._sub_client = mqtt.Client()
+        self._client_id = client_id
+        self._pub_client = mqtt.Client(client_id= self._client_id)
+        self._sub_client = mqtt.Client(client_id= self._client_id)
         if self._proxy_hostname is not None and self._proxy_port is not None:
             self._pub_client.proxy_set(proxy_type=socks.HTTP, proxy_addr=self._proxy_hostname, proxy_port=self._proxy_port)
             self._sub_client.proxy_set(proxy_type=socks.HTTP, proxy_addr=self._proxy_hostname, proxy_port=self._proxy_port)

@@ -52,6 +52,9 @@ class NativeServiceLocator(ServiceLocator):
         
         return cacert, key, device_cert
 
-
+    def get_mqtt_client_id(self) -> str:
+        mqtt_client_id = os.getenv("USER_IDENTITY")
+        return mqtt_client_id
+    
     def get_metadata(self, service_name: Optional[str] = None):
         pass
